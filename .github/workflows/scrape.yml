@@ -4,7 +4,7 @@ on:
   schedule:
     # Alle 12 Stunden: 06:00 und 18:00 UTC (08:00 und 20:00 MESZ)
     - cron: '0 6,18 * * *'
-  workflow_dispatch: # Manueller Start möglich
+  workflow_dispatch:
 
 jobs:
   scrape:
