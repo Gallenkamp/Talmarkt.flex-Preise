@@ -23,6 +23,9 @@ RESPONSE=$(curl -sf --max-time 30 "${API_URL}") || {
   exit 1
 }
 
+# Zeitstempel des Abrufs (UTC)
+CAPTURED_AT=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+
 # FINAL-Einträge extrahieren (from, to, value)
 FINALS=$(echo "${RESPONSE}" | jq -r '
   .[] | select(.status == "FINAL") |
@@ -55,7 +58,7 @@ while IFS= read -r line; do
 
   # Header schreiben falls Datei neu
   if [ ! -f "${TARGET_FILE}" ]; then
-    echo "from,to,value" > "${TARGET_FILE}"
+    echo "from,to,value,captured_at" > "${TARGET_FILE}"
   fi
 
   # Deduplizierung: prüfen ob from-Zeitstempel am Zeilenanfang bereits vorhanden
@@ -64,8 +67,8 @@ while IFS= read -r line; do
     continue
   fi
 
-  # Zeile anhängen
-  echo "${line}" >> "${TARGET_FILE}"
+  # Zeile anhängen (mit Abruf-Zeitstempel)
+  echo "${line},\"${CAPTURED_AT}\"" >> "${TARGET_FILE}"
   COUNT=$((COUNT + 1))
 
 done <<< "${FINALS}"
