@@ -112,3 +112,7 @@ while IFS= read -r line; do
 done <<< "${FORECASTS}"
 
 echo "FORECAST: ${FC_COUNT} Einträge gespeichert."
+
+# --- EPEX-Spotpreise abrufen ---
+echo ""
+bash "${SCRIPT_DIR}/scrape-epex.sh"

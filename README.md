@@ -4,7 +4,8 @@ Automatische Archivierung der stündlichen Strompreise des WSW Tal.Markt Flex Ta
 
 ## Datenquelle
 
-[WSW Energiepreisuhr API](https://energiepreisuhr.wsw-online.de/api/energy-priceForecast)
+- [WSW Energiepreisuhr API](https://energiepreisuhr.wsw-online.de/api/energy-priceForecast) – Tal.Markt Flex Endkundenpreise
+- [aWATTar API](https://api.awattar.de/v1/marketdata) – EPEX Day-Ahead Spotpreise (Großhandel)
 
 ## Struktur
 
@@ -14,6 +15,10 @@ data/
     06-Juni.csv
     07-Juli.csv
   forecasts/
+    2026/
+      06-Juni.csv
+      07-Juli.csv
+  epex/
     2026/
       06-Juni.csv
       07-Juli.csv
@@ -40,6 +45,16 @@ Prognosewerte bei jedem Abruf. Pro Stunde können mehrere Einträge existieren (
 | `from`        | Beginn des Zeitfensters (ISO 8601, UTC) |
 | `to`          | Ende des Zeitfensters (ISO 8601, UTC)   |
 | `value`       | Prognosewert in Cent/kWh                |
+
+### EPEX-Spotpreise (`data/epex/YYYY/MM-Monatsname.csv`)
+
+EPEX Day-Ahead Großhandelspreise (Quelle: aWATTar API), umgerechnet in Cent/kWh. Dedupliziert, ein Eintrag pro Stunde. Ermöglicht den direkten Vergleich mit dem WSW-Endkundenpreis.
+
+| Spalte  | Beschreibung                            |
+|---------|-----------------------------------------|
+| `from`  | Beginn des Zeitfensters (ISO 8601, UTC) |
+| `to`    | Ende des Zeitfensters (ISO 8601, UTC)   |
+| `value` | EPEX-Spotpreis in Cent/kWh              |
 
 ## Zeitplan
 
