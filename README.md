@@ -13,22 +13,37 @@ data/
   2026/
     06-Juni.csv
     07-Juli.csv
-  2027/
-    01-Januar.csv
-    ...
+  forecasts/
+    2026/
+      06-Juni.csv
+      07-Juli.csv
 ```
 
-Jede CSV-Datei enthält die bestätigten (`FINAL`) Stundenpreise eines Monats:
+### FINAL-Preise (`data/YYYY/MM-Monatsname.csv`)
 
-| Spalte  | Beschreibung                          |
-|---------|---------------------------------------|
-| `from`  | Beginn des Zeitfensters (ISO 8601, UTC) |
-| `to`    | Ende des Zeitfensters (ISO 8601, UTC)   |
-| `value` | Preis in Cent/kWh                       |
+Bestätigte Stundenpreise, dedupliziert (ein Eintrag pro Stunde):
+
+| Spalte        | Beschreibung                            |
+|---------------|-----------------------------------------|
+| `from`        | Beginn des Zeitfensters (ISO 8601, UTC) |
+| `to`          | Ende des Zeitfensters (ISO 8601, UTC)   |
+| `value`       | Preis in Cent/kWh                       |
+| `captured_at` | Zeitpunkt des API-Abrufs (UTC)          |
+
+### Forecast-Snapshots (`data/forecasts/YYYY/MM-Monatsname.csv`)
+
+Prognosewerte bei jedem Abruf. Pro Stunde können mehrere Einträge existieren (ein Snapshot je Abruf), um die Schwankung und Treffsicherheit der Prognose auszuwerten.
+
+| Spalte        | Beschreibung                            |
+|---------------|-----------------------------------------|
+| `captured_at` | Zeitpunkt des API-Abrufs (UTC)          |
+| `from`        | Beginn des Zeitfensters (ISO 8601, UTC) |
+| `to`          | Ende des Zeitfensters (ISO 8601, UTC)   |
+| `value`       | Prognosewert in Cent/kWh                |
 
 ## Zeitplan
 
-GitHub Actions ruft die API alle 12 Stunden ab (08:00 und 20:00 MESZ). Nur neue `FINAL`-Einträge werden angehängt – Duplikate werden übersprungen.
+GitHub Actions ruft die API alle 12 Stunden ab (08:00 und 20:00 MESZ). Neue `FINAL`-Einträge werden dedupliziert angehängt, `FORECAST`-Einträge werden bei jedem Abruf als Snapshot gespeichert.
 
 Der Workflow kann auch manuell über *Actions → WSW Preise scrapen → Run workflow* gestartet werden.
 
